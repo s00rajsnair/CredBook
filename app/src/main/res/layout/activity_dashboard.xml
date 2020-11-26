@@ -6,4 +6,91 @@
     android:layout_height="match_parent"
     tools:context=".DashboardActivity">
 
+    <Button
+        android:id="@+id/addcustomerbtn"
+        android:layout_width="168dp"
+        android:layout_height="62dp"
+        android:layout_marginBottom="44dp"
+        android:text="add customer"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.869"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <ListView
+        android:id="@+id/customerslistview"
+        android:layout_width="0dp"
+        android:layout_height="322dp"
+        android:layout_marginBottom="64dp"
+        app:layout_constraintBottom_toTopOf="@+id/addcustomerbtn"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.6"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/credit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="92dp"
+        android:fontFamily="sans-serif-black"
+        android:text="₹ 0"
+        android:textColor="#37DC1A"
+        android:textSize="30sp"
+        app:layout_constraintBottom_toTopOf="@+id/customerslistview"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toEndOf="@+id/debit"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.296" />
+
+    <TextView
+        android:id="@+id/debit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="76dp"
+        android:fontFamily="sans-serif-black"
+        android:text="₹ 0"
+        android:textColor="#D51010"
+        android:textSize="30sp"
+        app:layout_constraintBottom_toTopOf="@+id/customerslistview"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.296" />
+
+    <TextView
+        android:id="@+id/textView4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="76dp"
+        android:layout_marginBottom="64dp"
+        android:text="You will get"
+        app:layout_constraintBottom_toTopOf="@+id/customerslistview"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/credit"
+        app:layout_constraintVertical_bias="0.245" />
+
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="You will give"
+        app:layout_constraintBottom_toTopOf="@+id/customerslistview"
+        app:layout_constraintEnd_toStartOf="@+id/textView4"
+        app:layout_constraintHorizontal_bias="0.31"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/debit"
+        app:layout_constraintVertical_bias="0.115" />
+
+    <Button
+        android:id="@+id/viewreportbtn"
+        android:layout_width="304dp"
+        android:layout_height="43dp"
+        android:text="view report"
+        app:layout_constraintBottom_toTopOf="@+id/customerslistview"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.495"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView3"
+        app:layout_constraintVertical_bias="0.343" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
