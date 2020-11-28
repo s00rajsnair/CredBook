@@ -1,3 +1,4 @@
+
 package com.example.credbook;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -35,3 +36,4 @@ public class AddCustomerActivity extends AppCompatActivity {
         contactList.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
     }
 }
+
