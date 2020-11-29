@@ -3,4 +3,6 @@
     <color name="colorPrimary">#e3d081</color>
     <color name="colorPrimaryDark">#c1a946</color>
     <color name="colorAccent">#D81B60</color>
+    <color name="creditColor">#32E106</color>
+    <color name="debitColor">#FF2406</color>
 </resources>

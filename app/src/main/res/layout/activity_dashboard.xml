@@ -19,7 +19,7 @@
         app:layout_constraintStart_toStartOf="parent" />
 
     <ListView
-        android:id="@+id/customerslistview"
+        android:id="@+id/transactions_lv"
         android:layout_width="0dp"
         android:layout_height="322dp"
         android:layout_marginBottom="64dp"
@@ -37,7 +37,7 @@
         android:text="₹ 0"
         android:textColor="#37DC1A"
         android:textSize="30sp"
-        app:layout_constraintBottom_toTopOf="@+id/customerslistview"
+        app:layout_constraintBottom_toTopOf="@+id/transactions_lv"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toEndOf="@+id/debit"
@@ -53,7 +53,7 @@
         android:text="₹ 0"
         android:textColor="#D51010"
         android:textSize="30sp"
-        app:layout_constraintBottom_toTopOf="@+id/customerslistview"
+        app:layout_constraintBottom_toTopOf="@+id/transactions_lv"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.296" />
@@ -65,7 +65,7 @@
         android:layout_marginEnd="76dp"
         android:layout_marginBottom="64dp"
         android:text="You will get"
-        app:layout_constraintBottom_toTopOf="@+id/customerslistview"
+        app:layout_constraintBottom_toTopOf="@+id/transactions_lv"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/credit"
         app:layout_constraintVertical_bias="0.245" />
@@ -75,7 +75,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="You will give"
-        app:layout_constraintBottom_toTopOf="@+id/customerslistview"
+        app:layout_constraintBottom_toTopOf="@+id/transactions_lv"
         app:layout_constraintEnd_toStartOf="@+id/textView4"
         app:layout_constraintHorizontal_bias="0.31"
         app:layout_constraintStart_toStartOf="parent"
@@ -87,7 +87,7 @@
         android:layout_width="304dp"
         android:layout_height="43dp"
         android:text="view report"
-        app:layout_constraintBottom_toTopOf="@+id/customerslistview"
+        app:layout_constraintBottom_toTopOf="@+id/transactions_lv"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.495"
         app:layout_constraintStart_toStartOf="parent"

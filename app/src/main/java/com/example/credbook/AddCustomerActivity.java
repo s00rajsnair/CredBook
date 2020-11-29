@@ -7,13 +7,15 @@ import androidx.core.app.ActivityCompat;
 
 import android.Manifest;
 import android.content.ContentResolver;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.os.Bundle;
 
 
 import android.provider.ContactsContract;
-import android.widget.ArrayAdapter;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
@@ -40,9 +42,17 @@ public class AddCustomerActivity extends AppCompatActivity {
         contactList = findViewById(R.id.contact_list);
         ListAdapter adapter = new SimpleAdapter(AddCustomerActivity.this, contacts, R.layout.contact, new String[]{"name", "phno"}, new int[]{R.id.contact_name, R.id.contact_number});
         contactList.setAdapter(adapter);
-
+        contactList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent intent = new Intent(AddCustomerActivity.this,TransactionActivity.class);
+                intent.putExtra(DatabaseHelper.ID, contacts.get(position).get(DatabaseHelper.ID));
+                intent.putExtra(DatabaseHelper.NAME, contacts.get(position).get(DatabaseHelper.NAME));
+                intent.putExtra(DatabaseHelper.PHONE_NUMBER, contacts.get(position).get(DatabaseHelper.PHONE_NUMBER));
+                startActivity(intent);
+            }
+        });
     }
-
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -70,10 +80,10 @@ public class AddCustomerActivity extends AppCompatActivity {
                 HashMap<String, String> contact = new HashMap<>();
                 String id = cur.getString(
                         cur.getColumnIndex(ContactsContract.Contacts._ID));
-                contact.put("id", id);
+                contact.put(DatabaseHelper.ID, id);
                 String name = cur.getString(cur.getColumnIndex(
                         ContactsContract.Contacts.DISPLAY_NAME));
-                contact.put("name", name);
+                contact.put(DatabaseHelper.NAME, name);
                 Cursor pCur = cr.query(
                         ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
                         null,
@@ -82,10 +92,9 @@ public class AddCustomerActivity extends AppCompatActivity {
                 while (pCur.moveToNext()) {
                     String phoneNo = pCur.getString(pCur.getColumnIndex(
                             ContactsContract.CommonDataKinds.Phone.NUMBER));
-                    contact.put("phno", phoneNo);
+                    contact.put(DatabaseHelper.PHONE_NUMBER, phoneNo);
                 }
                 contactList.add(contact);
-                System.out.println(contact);
             }
         }
         if (cur != null) {
