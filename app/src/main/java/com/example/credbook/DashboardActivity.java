@@ -24,12 +24,12 @@ public class DashboardActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dashboard);
         myDb = new DatabaseHelper(this);
-        transactionContacts = myDb.getAllTransactionsData();
+        transactionContacts = myDb.getTransactedUsers();
         System.out.println(transactionContacts);
         userPref = getSharedPreferences("user",MODE_PRIVATE);
         setTitle("CredBook > " + userPref.getString("username",null));
         transactionsLv = findViewById(R.id.transactions_lv);
-        ListAdapter adapter = new SimpleAdapter(this, transactionContacts, R.layout.transacted_customer, new String[]{DatabaseHelper.ID,DatabaseHelper.TRANSACTION_DATE,DatabaseHelper.PHONE_NUMBER}, new int[]{R.id.customer_name,R.id.transaction_date,R.id.customer_phone});
+        ListAdapter adapter = new SimpleAdapter(this, transactionContacts, R.layout.transacted_customer, new String[]{DatabaseHelper.NAME,DatabaseHelper.TRANSACTION_DATE,DatabaseHelper.PHONE_NUMBER}, new int[]{R.id.customer_name,R.id.transaction_date,R.id.customer_phone});
         transactionsLv.setAdapter(adapter);
     }
 

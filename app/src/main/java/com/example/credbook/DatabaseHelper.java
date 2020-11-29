@@ -88,6 +88,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 transaction.put(TRANSACTION_DATE, csr.getString(csr.getColumnIndex(TRANSACTION_DATE)));
                 transactions.add(transaction);
             }
+            csr.close();
 
         } catch (Exception e) {
             System.out.println(e);
@@ -96,21 +97,28 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     public ArrayList<HashMap<String, String>> getTransactedUsers(){
-        SQLiteDatabase myDb = this.getWritableDatabase();
-        ArrayList<HashMap<String,String>> transactions = getAllTransactionsData();
         ArrayList<HashMap<String,String>> transactedUserDetails = new ArrayList<>();
-        ArrayList<String> transactedUserIds = new ArrayList<>();
-        for (HashMap<String,String> transaction: transactions) {
-            transactedUserIds.add(transaction.get("id"));
-        }
-        for (String id: transactedUserIds) {
-            Cursor csr = myDb.rawQuery("select * from " + CUSTOMER_TABLE , new String[]{id});
-            HashMap<String, String> transactedUser = new HashMap<>();
-            transactedUser.put(ID, csr.getString(csr.getColumnIndex(ID)));
-            transactedUser.put(NAME, csr.getString(csr.getColumnIndex(NAME)));
-            transactedUser.put(PHONE_NUMBER, csr.getString(csr.getColumnIndex(PHONE_NUMBER)));
-            transactedUserDetails.add(transactedUser);
-            System.out.println(transactedUser);
+        try{
+            SQLiteDatabase myDb = this.getWritableDatabase();
+            ArrayList<HashMap<String,String>> transactions = getAllTransactionsData();
+            ArrayList<String> transactedUserIds = new ArrayList<>();
+            for (HashMap<String,String> transaction: transactions) {
+                transactedUserIds.add(transaction.get("id"));
+            }
+            for (int i=0;i<transactions.size();i++) {
+                String query = "select * from " + CUSTOMER_TABLE + " where "+ID+" = " + transactions.get(i).get(ID);
+                Cursor csr = myDb.rawQuery(query,null);
+                csr.moveToFirst();
+                HashMap<String, String> transactedUser = new HashMap<>();
+                transactedUser.put(ID, csr.getString(csr.getColumnIndex(ID)));
+                transactedUser.put(NAME, csr.getString(csr.getColumnIndex(NAME)));
+                transactedUser.put(PHONE_NUMBER, csr.getString(csr.getColumnIndex(PHONE_NUMBER)));
+                transactedUser.put(TRANSACTION_DATE,transactions.get(i).get(TRANSACTION_DATE));
+                transactedUserDetails.add(transactedUser);
+                csr.close();
+            }
+        }catch (Exception e){
+            e.printStackTrace();
         }
         return  transactedUserDetails;
     }
