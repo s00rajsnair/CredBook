@@ -66,9 +66,14 @@ public class TransactionActivity extends AppCompatActivity {
             Toast.makeText(this,"Please enter an amount", Toast.LENGTH_SHORT).show();
         }
         else{
-            dbHelper.insertCustomerData(customerName,customerPhno, Integer.parseInt(customerId));
-            dbHelper.insertTransactionData(Integer.parseInt(customerId),Double.parseDouble(amount.getText().toString()),transactionIsCredit);
-            goToDashboard();
+            long result = dbHelper.insertTransactionData(Integer.parseInt(customerId),Double.parseDouble(amount.getText().toString()),transactionIsCredit);
+            if(result ==-1){
+                Toast.makeText(this,"Selected Customer already exists in transacted users list", Toast.LENGTH_SHORT).show();
+            }
+            else {
+                dbHelper.insertCustomerData(customerName,customerPhno, Integer.parseInt(customerId));
+                goToDashboard();
+            }
         }
 
     }

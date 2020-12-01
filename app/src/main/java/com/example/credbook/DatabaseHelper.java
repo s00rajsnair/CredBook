@@ -3,12 +3,14 @@ package com.example.credbook;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteConstraintException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Build;
 import android.os.strictmode.SqliteObjectLeakedViolation;
 import android.provider.ContactsContract;
 import android.renderscript.ScriptIntrinsicYuvToRGB;
+import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 
@@ -65,21 +67,21 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     public long insertTransactionData(int id, double amount, boolean transactionIsCredit) {
-        SQLiteDatabase myDB = this.getWritableDatabase();
-        ContentValues contentValues = new ContentValues();
-        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-        LocalDateTime now = LocalDateTime.now();
-        String currentDate = dtf.format(now);
-        contentValues.put(ID, id);
-        if (transactionIsCredit) {
-            contentValues.put(CREDIT, amount);
-            contentValues.put(DEBIT, 0);
-        } else {
-            contentValues.put(DEBIT, amount);
-            contentValues.put(CREDIT, 0);
-        }
-        contentValues.put(TRANSACTION_DATE, currentDate);
-        return myDB.insert(TRANSACTION_TABLE, null, contentValues);
+            SQLiteDatabase myDB = this.getWritableDatabase();
+            ContentValues contentValues = new ContentValues();
+            DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+            LocalDateTime now = LocalDateTime.now();
+            String currentDate = dtf.format(now);
+            contentValues.put(ID, id);
+            if (transactionIsCredit) {
+                contentValues.put(CREDIT, amount);
+                contentValues.put(DEBIT, 0);
+            } else {
+                contentValues.put(DEBIT, amount);
+                contentValues.put(CREDIT, 0);
+            }
+            contentValues.put(TRANSACTION_DATE, currentDate);
+            return myDB.insert(TRANSACTION_TABLE, null, contentValues);
     }
 
     public ArrayList<HashMap<String, String>> getAllTransactionsData() {
