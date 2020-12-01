@@ -6,4 +6,5 @@
     <color name="creditColor">#32E106</color>
     <color name="debitColor">#FF2406</color>
     <color name="dashboardBackgroundColor">#EFEFEF</color>
+    <color name="settledColor">#333333</color>
 </resources>

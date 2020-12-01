@@ -37,7 +37,6 @@ public class AddCustomerActivity extends AppCompatActivity {
             contacts = getAllContacts();
         } else {
             requestPermission();
-
         }
         contactList = findViewById(R.id.contact_list);
         ListAdapter adapter = new SimpleAdapter(AddCustomerActivity.this, contacts, R.layout.contact, new String[]{"name", "phno"}, new int[]{R.id.contact_name, R.id.contact_number});

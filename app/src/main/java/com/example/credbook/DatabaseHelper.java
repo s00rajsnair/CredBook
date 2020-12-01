@@ -31,8 +31,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static String DEBIT = "debit";
     public static String CREDIT = "credit";
     public static String TRANSACTION_DATE = "transactiondate";
-    public static String CREDIT_SUM = "creditsum";
-    public static String DEBIT_SUM = "debitsum";
 
 
     public DatabaseHelper(Context context) {
@@ -67,21 +65,21 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     public long insertTransactionData(int id, double amount, boolean transactionIsCredit) {
-            SQLiteDatabase myDB = this.getWritableDatabase();
-            ContentValues contentValues = new ContentValues();
-            DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-            LocalDateTime now = LocalDateTime.now();
-            String currentDate = dtf.format(now);
-            contentValues.put(ID, id);
-            if (transactionIsCredit) {
-                contentValues.put(CREDIT, amount);
-                contentValues.put(DEBIT, 0);
-            } else {
-                contentValues.put(DEBIT, amount);
-                contentValues.put(CREDIT, 0);
-            }
-            contentValues.put(TRANSACTION_DATE, currentDate);
-            return myDB.insert(TRANSACTION_TABLE, null, contentValues);
+        SQLiteDatabase myDB = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        LocalDateTime now = LocalDateTime.now();
+        String currentDate = dtf.format(now);
+        contentValues.put(ID, id);
+        if (transactionIsCredit) {
+            contentValues.put(CREDIT, amount);
+            contentValues.put(DEBIT, 0);
+        } else {
+            contentValues.put(DEBIT, amount);
+            contentValues.put(CREDIT, 0);
+        }
+        contentValues.put(TRANSACTION_DATE, currentDate);
+        return myDB.insert(TRANSACTION_TABLE, null, contentValues);
     }
 
     public ArrayList<HashMap<String, String>> getAllTransactionsData() {
@@ -105,7 +103,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return transactions;
     }
 
-    public ArrayList<HashMap<String, String>> getTransactedUsers() {
+    public ArrayList<HashMap<String, String>> getTransactedCustomers() {
         ArrayList<HashMap<String, String>> transactedUserDetails = new ArrayList<>();
         try {
             SQLiteDatabase myDb = this.getWritableDatabase();
@@ -140,6 +138,37 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             e.printStackTrace();
         }
         return transactedUserDetails;
+    }
+
+    public HashMap<String, String> getTransactedCustomer(String id) {
+        SQLiteDatabase myDb = this.getWritableDatabase();
+        String query1 = "select * from " + CUSTOMER_TABLE + " where " + ID + " = " + id;
+        String query2 = "select * from " + TRANSACTION_TABLE + " where " + ID + " = " + id;
+        Cursor csr1 = myDb.rawQuery(query1, null);
+        Cursor csr2 = myDb.rawQuery(query2, null);
+        csr1.moveToFirst();
+        csr2.moveToFirst();
+        HashMap<String, String> transactedUser = new HashMap<>();
+        transactedUser.put(ID, csr1.getString(csr1.getColumnIndex(ID)));
+        transactedUser.put(NAME, csr1.getString(csr1.getColumnIndex(NAME)));
+        transactedUser.put(PHONE_NUMBER, csr1.getString(csr1.getColumnIndex(PHONE_NUMBER)));
+        double creditAmount = Double.parseDouble(csr2.getString(csr2.getColumnIndex(CREDIT)));
+        double debitAmount = Double.parseDouble(csr2.getString(csr2.getColumnIndex(DEBIT)));
+        if (creditAmount > debitAmount) {
+            transactedUser.put("AMOUNT", Double.toString(creditAmount - debitAmount));
+            transactedUser.put("STATUS", "You'll get");
+            transactedUser.put("STATE","CREDIT");
+        } else if (creditAmount < debitAmount) {
+            transactedUser.put("AMOUNT", Double.toString(debitAmount - creditAmount));
+            transactedUser.put("STATUS", "You'll give");
+            transactedUser.put("STATE","DEBIT");
+
+        } else {
+            transactedUser.put("AMOUNT", Double.toString(0));
+            transactedUser.put("STATUS", "Settled");
+            transactedUser.put("STATE", "SETTLED");
+        }
+        return transactedUser;
     }
 
     public int deleteContact(int contactID) {
@@ -189,5 +218,36 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             return total;
         }
         return 0;
+    }
+
+    public void updateTransactionDetails(String id, boolean transactionIsCredit, double amount) {
+        SQLiteDatabase myDb = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        String query1 = "select * from " + TRANSACTION_TABLE + " where " + ID + " = " + id;
+        Cursor cursor = myDb.rawQuery(query1, null);
+        cursor.moveToFirst();
+        double credit = cursor.getDouble(cursor.getColumnIndex(CREDIT));
+        double debit = cursor.getDouble(cursor.getColumnIndex(DEBIT));
+        if (transactionIsCredit) {
+            if (credit - amount < 0) {
+                debit += -1 * (credit - amount);
+                credit = 0;
+            } else {
+                credit -= amount;
+
+            }
+
+        } else {
+            if (debit - amount < 0) {
+                credit += -1 * (debit - amount);
+                debit = 0;
+            }else {
+                debit -= amount;
+            }
+        }
+        contentValues.put(CREDIT, credit);
+        contentValues.put(DEBIT, debit);
+        int result = myDb.update(TRANSACTION_TABLE, contentValues, ID + " =?", new String[]{id});
+        System.out.println("No of rows affected : " + result);
     }
 }
