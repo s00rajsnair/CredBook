@@ -6,7 +6,9 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Build;
+import android.os.strictmode.SqliteObjectLeakedViolation;
 import android.provider.ContactsContract;
+import android.renderscript.ScriptIntrinsicYuvToRGB;
 
 import androidx.annotation.RequiresApi;
 
@@ -27,6 +29,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static String DEBIT = "debit";
     public static String CREDIT = "credit";
     public static String TRANSACTION_DATE = "transactiondate";
+    public static String CREDIT_SUM = "creditsum";
+    public static String DEBIT_SUM = "debitsum";
 
 
     public DatabaseHelper(Context context) {
@@ -63,14 +67,17 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public long insertTransactionData(int id, double amount, boolean transactionIsCredit) {
         SQLiteDatabase myDB = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
-        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy ");
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         LocalDateTime now = LocalDateTime.now();
         String currentDate = dtf.format(now);
         contentValues.put(ID, id);
-        if (transactionIsCredit)
+        if (transactionIsCredit) {
             contentValues.put(CREDIT, amount);
-        else
+            contentValues.put(DEBIT, 0);
+        } else {
             contentValues.put(DEBIT, amount);
+            contentValues.put(CREDIT, 0);
+        }
         contentValues.put(TRANSACTION_DATE, currentDate);
         return myDB.insert(TRANSACTION_TABLE, null, contentValues);
     }
@@ -79,7 +86,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         ArrayList<HashMap<String, String>> transactions = new ArrayList<>();
         try {
             SQLiteDatabase myDb = this.getWritableDatabase();
-            Cursor csr = myDb.rawQuery("select * from " + TRANSACTION_TABLE, null);
+            Cursor csr = myDb.rawQuery("select * from " + TRANSACTION_TABLE + " order by " + TRANSACTION_DATE + " asc ", null);
             while (csr.moveToNext()) {
                 HashMap<String, String> transaction = new HashMap<>();
                 transaction.put(ID, csr.getString(csr.getColumnIndex(ID)));
@@ -96,32 +103,43 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return transactions;
     }
 
-    public ArrayList<HashMap<String, String>> getTransactedUsers(){
-        ArrayList<HashMap<String,String>> transactedUserDetails = new ArrayList<>();
-        try{
+    public ArrayList<HashMap<String, String>> getTransactedUsers() {
+        ArrayList<HashMap<String, String>> transactedUserDetails = new ArrayList<>();
+        try {
             SQLiteDatabase myDb = this.getWritableDatabase();
-            ArrayList<HashMap<String,String>> transactions = getAllTransactionsData();
+            ArrayList<HashMap<String, String>> transactions = getAllTransactionsData();
             ArrayList<String> transactedUserIds = new ArrayList<>();
-            for (HashMap<String,String> transaction: transactions) {
+            for (HashMap<String, String> transaction : transactions) {
                 transactedUserIds.add(transaction.get("id"));
             }
-            for (int i=0;i<transactions.size();i++) {
-                String query = "select * from " + CUSTOMER_TABLE + " where "+ID+" = " + transactions.get(i).get(ID);
-                Cursor csr = myDb.rawQuery(query,null);
+            for (int i = 0; i < transactions.size(); i++) {
+                String query = "select * from " + CUSTOMER_TABLE + " where " + ID + " = " + transactions.get(i).get(ID);
+                Cursor csr = myDb.rawQuery(query, null);
                 csr.moveToFirst();
                 HashMap<String, String> transactedUser = new HashMap<>();
                 transactedUser.put(ID, csr.getString(csr.getColumnIndex(ID)));
                 transactedUser.put(NAME, csr.getString(csr.getColumnIndex(NAME)));
                 transactedUser.put(PHONE_NUMBER, csr.getString(csr.getColumnIndex(PHONE_NUMBER)));
-                transactedUser.put(TRANSACTION_DATE,transactions.get(i).get(TRANSACTION_DATE));
+                double creditAmount = Double.parseDouble(transactions.get(i).get(CREDIT));
+                double debitAmount = Double.parseDouble(transactions.get(i).get(DEBIT));
+                if (creditAmount > debitAmount) {
+                    transactedUser.put("AMOUNT", Double.toString(creditAmount - debitAmount));
+                    transactedUser.put("STATUS", "You'll get");
+                } else if (creditAmount < debitAmount) {
+                    transactedUser.put("AMOUNT", Double.toString(debitAmount - creditAmount));
+                    transactedUser.put("STATUS", "You'll give");
+                } else {
+                    transactedUser.put("AMOUNT", Double.toString(0));
+                }
                 transactedUserDetails.add(transactedUser);
                 csr.close();
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
-        return  transactedUserDetails;
+        return transactedUserDetails;
     }
+
     public int deleteContact(int contactID) {
         SQLiteDatabase myDb = this.getWritableDatabase();
         return myDb.delete(CUSTOMER_TABLE, ID + "= ?", new String[]{String.valueOf(contactID)});
@@ -160,4 +178,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         myDb.delete(CUSTOMER_TABLE, null, null);
     }
 
+    public double getSumOf(String column) {
+        SQLiteDatabase myDb = this.getWritableDatabase();
+        Cursor cursor = myDb.rawQuery("SELECT SUM(" + column + ") as Total FROM " + TRANSACTION_TABLE, null);
+        if (cursor.moveToFirst()) {
+            int total = cursor.getInt(cursor.getColumnIndex("Total"));
+            System.out.println(total);
+            return total;
+        }
+        return 0;
+    }
 }

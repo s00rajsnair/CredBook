@@ -5,4 +5,5 @@
     <color name="colorAccent">#D81B60</color>
     <color name="creditColor">#32E106</color>
     <color name="debitColor">#FF2406</color>
+    <color name="dashboardBackgroundColor">#EFEFEF</color>
 </resources>

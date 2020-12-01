@@ -13,6 +13,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -61,9 +62,15 @@ public class TransactionActivity extends AppCompatActivity {
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     public void saveTransactionDetails (View view){
-        dbHelper.insertCustomerData(customerName,customerPhno, Integer.parseInt(customerId));
-        dbHelper.insertTransactionData(Integer.parseInt(customerId),Double.parseDouble(amount.getText().toString()),transactionIsCredit);
-        goToDashboard();
+        if(amount.getText().toString().isEmpty()){
+            Toast.makeText(this,"Please enter an amount", Toast.LENGTH_SHORT).show();
+        }
+        else{
+            dbHelper.insertCustomerData(customerName,customerPhno, Integer.parseInt(customerId));
+            dbHelper.insertTransactionData(Integer.parseInt(customerId),Double.parseDouble(amount.getText().toString()),transactionIsCredit);
+            goToDashboard();
+        }
+
     }
 
     private void goToDashboard(){
