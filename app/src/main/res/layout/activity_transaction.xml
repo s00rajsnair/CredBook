@@ -44,13 +44,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="280dp"
+        android:background="@color/colorPrimary"
+        android:onClick="saveTransactionDetails"
         android:text="Enter"
         android:textAlignment="center"
-        android:background="#2B2B2B"
+        android:textColor="#FFFFFF"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
-        android:onClick="saveTransactionDetails"
         app:layout_constraintStart_toStartOf="parent" />
 
     <TextView

@@ -24,12 +24,15 @@
         android:id="@+id/createbtn"
         android:layout_width="328dp"
         android:layout_height="69dp"
+        android:background="@color/colorPrimary"
+        android:onClick="createUser"
         android:text="create account"
+        android:textColor="#FFFFFF"
+        android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.493"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/username"
-        android:onClick="createUser"
         app:layout_constraintVertical_bias="0.916" />
 </androidx.constraintlayout.widget.ConstraintLayout>

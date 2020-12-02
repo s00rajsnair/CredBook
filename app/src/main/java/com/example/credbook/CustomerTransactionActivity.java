@@ -42,9 +42,9 @@ public class CustomerTransactionActivity extends AppCompatActivity {
         } else {
             myDb.updateTransactionDetails(getIntent().getStringExtra(DatabaseHelper.ID), transactionIsCredit, Double.parseDouble(transactionAmount.getText().toString()));
             updateCustomerTransactionActivity();
-
-
         }
+        transactionAmount.setText("");
+
     }
 
     public void giveFunction(View view) {
@@ -54,8 +54,9 @@ public class CustomerTransactionActivity extends AppCompatActivity {
         } else {
             myDb.updateTransactionDetails(getIntent().getStringExtra(DatabaseHelper.ID), transactionIsCredit, Double.parseDouble(transactionAmount.getText().toString()));
             updateCustomerTransactionActivity();
-
         }
+        transactionAmount.setText("");
+
     }
 
     void updateCustomerTransactionActivity() {
