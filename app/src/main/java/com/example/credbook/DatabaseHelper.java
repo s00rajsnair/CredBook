@@ -194,6 +194,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
         return contact;
     }
+    
+    //Updating the contact details 
 
     public int updateContactDetails(int id, String name, String phno, String email) {
         SQLiteDatabase myDb = this.getWritableDatabase();
@@ -203,6 +205,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return myDb.update(CUSTOMER_TABLE, contentValues, ID + " = ?", new String[]{String.valueOf(id)});
 
     }
+    
+    // Deleting the contact details
 
     public void deleteContacts() {
         SQLiteDatabase myDb = this.getWritableDatabase();
@@ -220,6 +224,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return 0;
     }
 
+    
+    // Updating the transaction details
     public void updateTransactionDetails(String id, boolean transactionIsCredit, double amount) {
         SQLiteDatabase myDb = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
